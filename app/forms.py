@@ -3,8 +3,20 @@
 """Forms module."""
 
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, PasswordField, StringField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
+from wtforms import (
+    BooleanField,
+    PasswordField,
+    StringField,
+    SubmitField,
+    TextAreaField,
+)
+from wtforms.validators import (
+    DataRequired,
+    Email,
+    EqualTo,
+    Length,
+    ValidationError,
+)
 
 from app.models import User
 
@@ -16,10 +28,10 @@ class LoginForm(FlaskForm):
         FlaskForm (class): Flask-specific subclass of WTForms
     """
 
-    username = StringField('Пользователь', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    remember_me = BooleanField('Запомнить меня')
-    submit = SubmitField('Войти')
+    username = StringField('Username', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember_me = BooleanField('Remember me')
+    submit = SubmitField('Sigh In')
 
 
 class RegistrationForm(FlaskForm):
@@ -44,8 +56,8 @@ class RegistrationForm(FlaskForm):
         Args:
             username: Username field data
 
-        Returns:
-            True, if the username is unique
+        Raises:
+            ValidationError, if the username is not unique
         """
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
@@ -58,9 +70,17 @@ class RegistrationForm(FlaskForm):
         Args:
             email: Email field data
 
-        Returns:
-            True, if an email is unique
+        Raises:
+            ValidationError, if an email is not unique
         """
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+
+
+class EditProfileForm(FlaskForm):
+    """User profile editing form."""
+
+    username = StringField('Username', validators=[DataRequired()])
+    about_me = TextAreaField('About me', validators=[Length(min=0, max=140)])
+    submit = SubmitField('Submit')

@@ -14,6 +14,7 @@ USERNAME_LENGTH = 64
 EMAIL_LENGTH = 120
 PASSWORD_HASH_LENGTH = 128
 POST_BODY_LENGTH = 140
+ABOUT_ME_LENGTH = 140
 
 
 class User(UserMixin, db.Model):
@@ -22,7 +23,7 @@ class User(UserMixin, db.Model):
     Args:
         UserMixin (class): This provides default implementations for the
             methods that Flask-Login expects user objects to have.
-        db (class): Database class SQLAlchemi
+        db.Model (class): Database class SQLAlchemi
     """
 
     id = db.Column(db.Integer, primary_key=True)
@@ -30,6 +31,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(EMAIL_LENGTH), index=True, unique=True)
     password_hash = db.Column(db.String(PASSWORD_HASH_LENGTH))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    about_me = db.Column(db.String(ABOUT_ME_LENGTH))
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         """Print users info.
@@ -69,14 +72,14 @@ class User(UserMixin, db.Model):
             (str): an URL gravatar image
         """
         avatar = Gravatar(self.email.lower())
-        return avatar.get_image(size=size, default='monsterid')
+        return avatar.get_image(size=size, default='robohash')
 
 
 class Post(db.Model):
     """Class Post.
 
     Args:
-        db (class): Base class SQLAlchemi
+        db.Model (class): Base class SQLAlchemi
 
     """
 
