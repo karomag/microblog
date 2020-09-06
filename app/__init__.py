@@ -27,4 +27,4 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 
-from app import models, routes  # noqa: F401 It is ok in flask
+from app import errors, models, routes  # noqa: F401 It is ok in flask
