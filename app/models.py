@@ -16,14 +16,21 @@ PASSWORD_HASH_LENGTH = 128
 POST_BODY_LENGTH = 140
 ABOUT_ME_LENGTH = 140
 
+followers = db.Table(
+    'followers',
+    db.Column('follower_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('followed_id', db.Integer, db.ForeignKey('user.id')),
+)
 
-class User(UserMixin, db.Model):
+
+class User(UserMixin, db.Model):  # noqa: WPS214 Found too many methods
     """Class User.
 
     Args:
         UserMixin (class): This provides default implementations for the
             methods that Flask-Login expects user objects to have.
-        db.Model (class): Database class SQLAlchemi
+
+        db.Model (class): Database class SQLAlchemi.
     """
 
     id = db.Column(db.Integer, primary_key=True)
@@ -33,6 +40,14 @@ class User(UserMixin, db.Model):
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(ABOUT_ME_LENGTH))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    followed = db.relationship(
+        'User',
+        secondary=followers,
+        primaryjoin=(followers.c.follower_id == id),
+        secondaryjoin=(followers.c.followed_id == id),
+        backref=db.backref('followers', lazy='dynamic'),
+        lazy='dynamic',
+    )
 
     def __repr__(self):
         """Print users info.
@@ -73,6 +88,52 @@ class User(UserMixin, db.Model):
         """
         avatar = Gravatar(self.email.lower())
         return avatar.get_image(size=size, default='robohash')
+
+    def follow(self, user):
+        """Adds the user as a follower.
+
+        Args:
+            user: a follower.
+        """
+        if not self.is_following(user):
+            self.followed.append(user)
+
+    def unfollow(self, user):
+        """Deletes the user as a follower.
+
+        Args:
+            user: a follower.
+        """
+        if self.is_following(user):
+            self.followed.remove(user)
+
+    def is_following(self, user):
+        """Checks the user is follower.
+
+        Args:
+            user: a user.
+
+        Returns:
+            True, if user is a follower.
+        """
+        return self.followed.filter(
+            followers.c.followed_id == user.id,
+        ).count() > 0
+
+    def followed_posts(self):
+        """Selects all posts written by users that you follow and own posts.
+
+        Returns:
+            (list): Posts.
+        """
+        followed = Post.query.join(
+            followers,
+            (followers.c.followed_id == Post.user_id),
+        ).filter(
+            followers.c.follower_id == self.id,
+        )
+        own = Post.query.filter_by(user_id=self.id)
+        return followed.union(own).order_by(Post.timestamp.desc())
 
 
 class Post(db.Model):
