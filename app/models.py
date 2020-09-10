@@ -3,12 +3,14 @@
 """Models module for DB."""
 
 from datetime import datetime
+from time import time
+import jwt
 
 from flask_login import UserMixin
 from libgravatar import Gravatar
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app import db, login
+from app import app, db, login
 
 USERNAME_LENGTH = 64
 EMAIL_LENGTH = 120
@@ -55,7 +57,7 @@ class User(UserMixin, db.Model):  # noqa: WPS214 Found too many methods
         Returns:
             str: Users info.
         """
-        return '<User {0}>'.format(self.username)
+        return '<User {0} email:{1}>'.format(self.username, self.email)
 
     def set_password(self, password):
         """Set user's password.
@@ -134,6 +136,41 @@ class User(UserMixin, db.Model):  # noqa: WPS214 Found too many methods
         )
         own = Post.query.filter_by(user_id=self.id)
         return followed.union(own).order_by(Post.timestamp.desc())
+
+    def get_reset_password_token(self, expires_in=600):
+        """Generates JWT token.
+
+        Args:
+            expires_in: Expiration time of token.
+
+        Returns:
+            JWT token for a reset password message.
+        """
+        return jwt.encode(
+            {'reset_password': self.id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'],
+            algorithm='HS256',
+        ).decode('utf-8')
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        """Checks the token.
+
+        Args:
+            token: JWT token.
+
+        Returns:
+            The User.
+        """
+        try:
+            id = jwt.decode(
+                token,
+                app.config['SECRET_KEY'],
+                algorithms=['HS256']
+            )['reset_password']
+        except:
+            return
+        return User.query.get(id)
 
 
 class Post(db.Model):
