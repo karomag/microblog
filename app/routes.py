@@ -12,6 +12,7 @@ from app import app, db
 from app.email import send_password_reset_email
 from app.forms import (
     EditProfileForm,
+    EmptyForm,
     LoginForm,
     PostForm,
     RegistrationForm,
@@ -127,12 +128,14 @@ def user(username):
         if posts.has_next else None
     prev_url = url_for('user', username=user.username, page=posts.prev_num) \
         if posts.has_prev else None
+    form = EmptyForm()
     return render_template(
         'user.html',
         user=user,
         posts=posts.items,
         next_url=next_url,
         prev_url=prev_url,
+        form=form,
     )
 
 
@@ -163,7 +166,7 @@ def edit_profile():
     )
 
 
-@app.route('/follow/<username>')
+@app.route('/follow/<username>', methods=['POST'])
 @login_required
 def follow(username):
     user = User.query.filter_by(username=username).first()
@@ -179,7 +182,7 @@ def follow(username):
     return redirect(url_for('user', username=username))
 
 
-@app.route('/unfollow/<username>')
+@app.route('/unfollow/<username>', methods=['POST'])
 @login_required
 def unfollow(username):
     user = User.query.filter_by(username=username).first()

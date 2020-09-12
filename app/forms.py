@@ -63,7 +63,7 @@ class RegistrationForm(FlaskForm):
         if user is not None:
             raise ValidationError('Please use a different username.')
 
-    # TODO: Method 'validate_email' may be 'static'
+    # TODO: Fix function.
     def validate_email(self, email):
         """Checks the email field's data for uniqueness.
 
@@ -116,3 +116,7 @@ class ResetPasswordForm(FlaskForm):
         validators=[DataRequired(), EqualTo('password')],
     )
     submit = SubmitField('Request Password Reset')
+
+
+class EmptyForm(FlaskForm):
+    submit = SubmitField('Submit')
