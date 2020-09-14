@@ -17,6 +17,7 @@ pyjwt = "^1.7.1"  # JSON Web Tokens
 flask-mail = "^0.9.1"
 flask-bootstrap = "^3.3.7"
 flask-moment = "^0.10.0"
+flask-babel = "^2.0.0"
 
 [tool.poetry.dev-dependencies]
 wemake-python-styleguide = "^0.14.1"

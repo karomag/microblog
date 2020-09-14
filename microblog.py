@@ -2,7 +2,7 @@
 
 """Main module of blog."""
 
-from app import app, db, mail
+from app import app, cli, db, mail
 from app.models import Post, User
 
 
