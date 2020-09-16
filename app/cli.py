@@ -2,8 +2,9 @@
 
 """Command Line Interface."""
 
-import click
 import os
+
+import click
 
 from app import app
 
@@ -37,7 +38,9 @@ def init(lang):
     """Initialize a new language."""
     if os.system('pybabel extract -F babel.cfg -k _l -o messages.pot .'):
         raise RuntimeError('extract command failed')
-    if os.system(
-            'pybabel init -i messages.pot -d app/translations -l ' + lang):
+    if os.system('{command} {lang}'.format(
+        command='pybabel init -i messages.pot -d app/translations -l',
+        lang=lang,
+    )):
         raise RuntimeError('init command failed')
     os.remove('messages.pot')

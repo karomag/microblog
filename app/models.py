@@ -4,8 +4,8 @@
 
 from datetime import datetime
 from time import time
-import jwt
 
+import jwt
 from flask_login import UserMixin
 from libgravatar import Gravatar
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -166,7 +166,7 @@ class User(UserMixin, db.Model):  # noqa: WPS214 Found too many methods
             id = jwt.decode(
                 token,
                 app.config['SECRET_KEY'],
-                algorithms=['HS256']
+                algorithms=['HS256'],
             )['reset_password']
         except:
             return
@@ -185,6 +185,7 @@ class Post(db.Model):
     body = db.Column(db.String(POST_BODY_LENGTH))
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    language = db.Column(db.String(5))
 
     def __repr__(self):
         """Print post's text.

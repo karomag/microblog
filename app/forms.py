@@ -2,7 +2,8 @@
 
 """Forms module."""
 
-from flask_babel import _, lazy_gettext as _l
+from flask_babel import _
+from flask_babel import lazy_gettext as _l
 from flask_wtf import FlaskForm
 from wtforms import (
     BooleanField,
@@ -83,7 +84,10 @@ class EditProfileForm(FlaskForm):
     """User profile editing form."""
 
     username = StringField(_l('Username', validators=[DataRequired()]))
-    about_me = TextAreaField(_l('About me'), validators=[Length(min=0, max=140)])
+    about_me = TextAreaField(
+        _l('About me'),
+        validators=[Length(min=0, max=140)],
+    )
     submit = SubmitField(_l('Submit'))
 
     def __init__(self, original_username, *args, **kwargs):

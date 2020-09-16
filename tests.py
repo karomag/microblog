@@ -2,8 +2,8 @@
 
 """UnitTests for models."""
 
-from datetime import datetime, timedelta
 import unittest
+from datetime import datetime, timedelta
 
 from app import app, db
 from app.models import Post, User
@@ -30,9 +30,11 @@ class UserModelCase(unittest.TestCase):
         u = User(username='Karomag', email='novikov.r31@gmail.com')
         self.assertEqual(
             u.get_avatar(128),
-            ('http://www.gravatar.com/avatar/'
-                '2cfb82245760cb2195e5635829cf97ec'
-                '?size=128&default=robohash'),
+            ('http://www.gravatar.com/avatar/{md5}{param}'.format(
+                md5='2cfb82245760cb2195e5635829cf97ec',
+                param='?size=128&default=robohash',
+            ),
+            )
         )
 
     def test_follow(self):
