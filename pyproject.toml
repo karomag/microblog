@@ -20,6 +20,7 @@ flask-moment = "^0.10.0"
 flask-babel = "^2.0.0"
 guess-language_spirit = "^0.5.3"
 requests = "^2.24.0"
+python-dotenv = "^0.14.0"
 
 [tool.poetry.dev-dependencies]
 wemake-python-styleguide = "^0.14.1"

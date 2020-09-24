@@ -6,11 +6,12 @@ from datetime import datetime
 from time import time
 
 import jwt
+from flask import current_app
 from flask_login import UserMixin
 from libgravatar import Gravatar
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app import app, db, login
+from app import db, login
 
 USERNAME_LENGTH = 64
 EMAIL_LENGTH = 120
@@ -148,7 +149,7 @@ class User(UserMixin, db.Model):  # noqa: WPS214 Found too many methods
         """
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
-            app.config['SECRET_KEY'],
+            current_app.config['SECRET_KEY'],
             algorithm='HS256',
         ).decode('utf-8')
 
@@ -165,7 +166,7 @@ class User(UserMixin, db.Model):  # noqa: WPS214 Found too many methods
         try:
             id = jwt.decode(
                 token,
-                app.config['SECRET_KEY'],
+                current_app.config['SECRET_KEY'],
                 algorithms=['HS256'],
             )['reset_password']
         except:
