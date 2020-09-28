@@ -21,6 +21,7 @@ flask-babel = "^2.0.0"
 guess-language_spirit = "^0.5.3"
 requests = "^2.24.0"
 python-dotenv = "^0.14.0"
+elasticsearch = "^7.9.1"
 
 [tool.poetry.dev-dependencies]
 wemake-python-styleguide = "^0.14.1"
