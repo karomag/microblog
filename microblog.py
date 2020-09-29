@@ -2,7 +2,7 @@
 
 """Main module of blog."""
 
-from app import cli, create_app, db, mail
+from app import cli, create_app, db
 from app.models import Post, User
 
 app = create_app()
@@ -16,4 +16,4 @@ def make_shell_context():
     Returns:
         dict: dict with objects.
     """
-    return {'db': db, 'User': User, 'Post': Post, 'mail': mail}
+    return {'db': db, 'User': User, 'Post': Post}
