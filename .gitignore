@@ -204,3 +204,4 @@ dmypy.json
 .pyre/
 
 logs/
+app.db
