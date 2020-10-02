@@ -48,7 +48,7 @@ libgravatar==0.2.4
 Mako==1.1.3
 MarkupSafe==1.1.1
 mccabe==0.6.1
--e git+https://github.com/karomag/microblog@b91d2a428bcf8ad16f14135c8117bfd3b56d4fc5#egg=microblog
+-e git+https://github.com/karomag/microblog@78b32afe102e20f01dc6217875a559c0114dae98#egg=microblog
 pbr==5.5.0
 pep8-naming==0.9.1
 pycodestyle==2.6.0
